@@ -14,15 +14,15 @@ interface Params extends ParsedUrlQuery {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const result = await axios.get(`http://127.0.0.1:8000/api/customers/`);
-  const paths = result.data.customers.map((customer: Customer) => {
-    return {
-      params: { id: customer.id.toString() },
-    };
-  });
+  // const result = await axios.get(`http://127.0.0.1:8000/api/customers/`);
+  // const paths = result.data.customers.map((customer: Customer) => {
+  //   return {
+  //     params: { id: customer.id.toString() },
+  //   };
+  // });
 
   return {
-    paths: paths,
+    paths: [],
     fallback: true,
   };
 };
@@ -41,12 +41,14 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (
       props: {
         customer: result.data.customer,
       },
+      revalidate: 60,
     };
   } catch (err) {
     if (err instanceof AxiosError) {
       if (err.response?.status == 404) {
         return {
           notFound: true,
+          revalidate: 60,
         };
       }
     }
